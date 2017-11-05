@@ -1,0 +1,20 @@
+{
+  "name": "chart-the-stock-market",
+  "version": "1.0.0",
+  "description": "FCC Chart the Stock Market",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "Tiago Correia",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "hbs": "^4.0.1",
+    "moment": "^2.19.1",
+    "mongoose": "^4.13.0",
+    "query-string": "^5.0.1",
+    "socket.io": "^2.0.4"
+  }
+}
