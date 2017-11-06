@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-let Markschema = new mongoose.Schema({
+let CodeSchema = new mongoose.Schema({
    name:{
        type: String,
        required:true,
@@ -17,6 +17,6 @@ let Markschema = new mongoose.Schema({
    data:[]
 }); 
 
-let Mark = mongoose.model("Mark",Markschema);
+let Code = mongoose.model("Code",CodeSchema);
 
-module.exports = Mark;
+module.exports = Code;
