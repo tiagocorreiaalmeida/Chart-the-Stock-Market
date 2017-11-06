@@ -81,9 +81,11 @@ app.get("/stock/:code", (req, res) => {
                         ,data: sortedData
                     }).then((data) => {
                         if(data){
-                            res.send(JSON.stringify({message:"Inserted with Success"}));
+                            //socketemit data
+                            res.send(JSON.stringify(data));
                         }
                     }).catch((e) => {
+                        //check for duplicates
                         console.log(e);
                     });
                /*  } */
