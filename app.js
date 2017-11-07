@@ -11,7 +11,7 @@ const express = require("express"),
 
 
 const mongoose = require("./config/mongoose");
-const Code = require("./models/Code");
+const Code = require("./models/code");
 
 const app = express();
 const server = http.createServer(app);
@@ -27,11 +27,87 @@ app.get("/", (req, res) => {
 
 
 app.get("/currentData", (req, res) => {
-    Code.find(/* {date:new Date(moment().format("YYYY-MM-DD"))} */).sort({ "data": -1 }).then((data) => {
+    Code.remove({date:{$lte:new Date(moment().subtract(1, 'd').format("YYYY-MM-DD"))}}).then(()=>{
+        return  Code.find({date:new Date(moment().format("YYYY-MM-DD"))}).sort({ "data": -1 });
+    }).then((data)=>{
         res.send(JSON.stringify(data));
-    }).catch((e) => {
-        console.log(e);
+    }).catch((e)=>{
+    console.log(e);
     });
+});
+
+
+io.on("connection",(socket)=>{
+
+    socket.on("insertCode",function(data){
+        if(data.name){
+            const queryParams = queryString.stringify({
+                start_date: moment().subtract(2, 'y').format("YYYY-MM-DD"),
+                end_date: moment().format("YYYY-MM-DD"),
+                column_index: 4,
+                api_key: process.env.API_KEY
+            });
+    
+            const options = {
+                hostname: 'www.quandl.com',
+                port: 443,
+                path: `/api/v3/datasets/WIKI/${data.name}.json?${queryParams}`,
+                method: 'GET'
+            }
+        
+            https.get(options, (response) => {
+
+                let responseData = "";
+                response.setEncoding('utf-8');
+                
+                response.on('data', (content) => {
+                    responseData += content;
+                });
+        
+                response.on("end", () => {
+                    responseData = JSON.parse(responseData);
+                   if(responseData.quandl_error || responseData.dataset.data.length === 0){
+                        socket.emit("errorMessage",{message:"Invalid Code"});
+                    }else{
+                        let dataSta = responseData.dataset.data.map((ele) => {
+                            return [Number(moment(ele[0]).format('x')), ele[1]];
+                        });
+        
+                        let sortedData = dataSta.sort();
+                        Code.create({
+                            name: responseData.dataset.dataset_code, description: responseData.dataset.name
+                            ,date: moment().format("YYYY-MM-DD")
+                            ,data: sortedData
+                        }).then((data) => {
+                            if(data){
+                                io.emit("inserted",data);
+                            }
+                        }).catch((e) => {
+                            if (e.code === 11000) {
+                                socket.emit("errorMessage",{message:"The stock you searched for all ready exists listed on the chart"});
+                            }
+                            console.log(e);
+                        });
+                     } 
+                });
+            });
+        }
+    });
+
+    socket.on("deleteCode",function(data){
+        if(data.name){
+            Code.findOneAndRemove({name:data.name}).then((doc)=>{
+                if(doc){
+                    io.emit("deleted",{name: doc.name});
+                }else{
+                    socket.emit("errorMessage",{message:"Stock Code not found"});
+                }
+                console.log(data);
+            }).catch((e)=>{
+              console.log(e);
+            });
+        }
+        });
 });
 
 server.listen(3000, () => {
@@ -39,57 +115,3 @@ server.listen(3000, () => {
 });
 
 
-app.get("/stock/:code", (req, res) => {
-    if(req.params.code){
-        let codeSearch = req.params.code;
-        const queryParams = queryString.stringify({
-            start_date: moment().subtract(1, 'y').format("YYYY-MM-DD"),
-            end_date: moment().format("YYYY-MM-DD"),
-            column_index: 4,
-            api_key: process.env.API_KEY
-        });
-
-        const options = {
-            hostname: 'www.quandl.com',
-            port: 443,
-            path: `/api/v3/datasets/WIKI/${codeSearch}.json?${queryParams}`,
-            method: 'GET'
-        }
-    
-        https.get(options, (response) => {
-            let responseData = "";
-            response.setEncoding('utf-8');
-    
-            response.on('data', (content) => {
-                responseData += content;
-            });
-    
-            response.on("end", () => {
-                responseData = JSON.parse(responseData);
-/*                 if(responseData.quandl_error.code){
-                    res.send(JSON.stringify({message:"Invalid Code"}));
-                }else{ */
-                    let dataSta = responseData.dataset.data.map((ele) => {
-                        return [Number(moment(ele[0]).format('x')), ele[1]];
-                    });
-    
-                    let sortedData = dataSta.sort();
-    
-                    Code.create({
-                        name: responseData.dataset.dataset_code, description: responseData.dataset.name
-                        ,date: moment().format("YYYY-MM-DD")
-                        ,data: sortedData
-                    }).then((data) => {
-                        if(data){
-                            //socketemit data
-                            res.send(JSON.stringify(data));
-                        }
-                    }).catch((e) => {
-                        //check for duplicates
-                        console.log(e);
-                    });
-               /*  } */
-            });
-        });
-    }
-});
