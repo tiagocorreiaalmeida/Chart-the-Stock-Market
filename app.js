@@ -25,7 +25,6 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
-
 app.get("/currentData", (req, res) => {
     Code.remove({date:{$lte:new Date(moment().subtract(1, 'd').format("YYYY-MM-DD"))}}).then(()=>{
         return  Code.find({date:new Date(moment().format("YYYY-MM-DD"))}).sort({ "data": -1 });
@@ -35,7 +34,6 @@ app.get("/currentData", (req, res) => {
     console.log(e);
     });
 });
-
 
 io.on("connection",(socket)=>{
 
@@ -98,7 +96,14 @@ io.on("connection",(socket)=>{
         if(data.name){
             Code.findOneAndRemove({name:data.name}).then((doc)=>{
                 if(doc){
-                    io.emit("deleted",{name: doc.name});
+                    Code.find().then((dbData)=>{
+                        console.log(dbData.length);
+                        if(dbData && dbData.length > 0){
+                            io.emit("deleted",{name: doc.name});
+                        }else{
+                            io.emit("deleted",{name: doc.name,empty:true});
+                        }
+                    });
                 }else{
                     socket.emit("errorMessage",{message:"Stock Code not found"});
                 }
