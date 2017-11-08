@@ -1,9 +1,97 @@
 .chart{
     width:100%;
     min-height:70vh;
-    display: none;
+    display: block;
 }
 
-.chart.active{
-    display: block;
+.remove{
+  cursor:pointer;
+}
+
+/*---------------------------------*/
+/*HEADER*/
+.lead{
+  text-transform:uppercase;
+}
+
+
+/*---------------------------------*/
+/* REMOVE BUTTON */
+.remove{
+  color: #A63446;
+  border-color: #A63446;
+}
+.remove:hover,
+.remove:active{
+  background-color:#A63446;
+  border-color: #A63446;
+}
+
+/*---------------------------------*/
+/* FORM */
+
+input#code{
+  border-radius:0;
+  border: 4px solid #0f6d7c;
+  font-size:1.2rem;
+}
+
+span#send{
+  border-radius:0;
+  border: 4px solid #0f6d7c;
+  background-color: #0f6d7c;
+  color:#fff;
+  font-size:1.2rem;
+  cursor:pointer;
+  transition: all .3s;
+}
+
+span#send:hover i{
+  transform:scale(1.1);
+}
+
+@media only screen and (max-width:500px){
+  input#code{
+    font-size:1rem;
+  }
+  span#send{
+    font-size:1rem;
+  }
+}
+
+/*---------------------------------*/
+/* FOOTER */
+
+footer{
+    border-top: 6px solid #0f6d7c;
+    background-color:#e9ecef;
+}
+footer .col-md-12{
+    padding: 15px;
+}
+.madeby{
+    font-weight: 400;
+    font-size: 1.35rem;
+    color:#34495e;
+}
+.api{
+    color: #474d55;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+.social a{
+    display: inline-block;
+    border: 2px solid #0f6d7c;
+    color:#0f6d7c;
+    background-color:transparent;
+    padding:7px;
+}
+.social a:hover{
+    color:#e9ecef;
+    background-color:#0f6d7c;
+}
+.social a i{
+    font-size: 25px;
+    min-width: 32px;
+    padding: 0;
 }

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
     <title>FCC Chart the Stock Market</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
@@ -11,29 +12,50 @@
 </head>
 
 <body>
-    <div class="jumbotron jumbotron-fluid container">
-        <div class="row">
-            <div class="col-md-12 text-center mb-4">
-                <h1 class="display-3">STOCKS</h1>
-            </div>
-            <div class="col-md-12 text-center">
-                <div id="container" class="chart"></div>
-            </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row" id="codelist">
-            <div class="col-md-12 mb-4" id="error">
-                <div class="input-group">
-                    <input id="code" type="text" class="form-control input-field" placeholder="code">
-                    <span id="send" class="input-group-addon input-button">
-                        <i class="fa fa-search" aria-hidden="true"></i>
-                    </span>
+    <main class="bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center mb-5">
+                    <h1 class="display-4 mt-5 mb-4">MARKET STOCKS</h1>
+                    <p class="lead mb-4">Syncs in realtime across clients</p>
+                    <div class="input-group">
+                        <input id="code" type="text" class="form-control input-field" placeholder="Insert a Stock Code, e.g. GOOG, HP">
+                        <span id="send" class="input-group-addon input-button">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <div class="col-md-12 mb-4" id="error"></div>
+                </div>
+                <div class="col-md-12 text-center">
+                    <div id="container" class="chart mb-5"></div>
                 </div>
             </div>
         </div>
-    </div>
-    <footer>Created by Tiago Correia</footer>
+        <div class="container">
+            <div class="row" id="codelist">
+            </div>
+        </div>
+    </main>
+    <footer class="mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p class="madeby">Created by Tiago Correia</p>
+                    <div class="social">
+                        <a href="https://github.com/tiagocorreiaalmeida" target="_blank">
+                            <i class="fa fa-github" aria-hidden="true"></i>
+                        </a>
+                        <a href="https://www.freecodecamp.org/tiagocorreiaalmeida">
+                            <i class="fa fa-free-code-camp" target="_blank" aria-hidden="true"></i>
+                        </a>
+                        <a href="http://www.tiagoalmeidacorreia.pt">
+                            <i class="fa fa-briefcase" target="_blank" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/js/popper.js"></script>
     <script src="/js/bootstrap.min.js"></script>

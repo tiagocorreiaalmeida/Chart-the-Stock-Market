@@ -20,14 +20,13 @@ $(document).ready(function () {
             <div class="card-body">
                 <h4 class="card-title">${ele.name}</h4>
                 <p class="card-text">${ele.description}</p>
-                <button class="remove btn btn-primary" id="${ele.name}">Remove</button>
+                <button class="remove btn btn-outline-danger" id="${ele.name}">Remove</button>
             </div>
         </div>`);
     }
 
     $.getJSON("/currentData", (function (stockData) {
         if (stockData && stockData.length !== 0) {
-            $(".chart").addClass("active");
             stockData.forEach(function(ele) {
                 chart.addSeries({
                     name: ele.name,
@@ -41,16 +40,22 @@ $(document).ready(function () {
     });
 
     $("#send").click(function () {
+        if($(".alert").length > 0){
+          $(".alert").remove();
+        }
         let input = $("#code").val();
         if (input) {
             socket.emit("insertCode",{name:input});
             $("#code").val("");
         } else {
-            if($(".alert").length > 0){
-                $(".alert").remove();
-              }
               $("#error").append(`<div class="alert alert-success mt-4" role="alert">
-              <strong>Error message: </strong>Fill the input field above</div>`);
+              <strong>Error message: </strong>Fill the input field</div>`);
+        }
+    });
+  
+    $(document).keypress(function(e){
+        if(e.which === 13){
+            $("#send").click();
         }
     });
 
@@ -60,9 +65,6 @@ $(document).ready(function () {
   });
 
   socket.on("inserted",function(data){
-      if(!$(".chart").hasClass('active')){
-        $(".chart").addClass("active");
-      }
     chart.addSeries({
         name: data.name,
         data: data.data
@@ -71,9 +73,6 @@ $(document).ready(function () {
   });
 
   socket.on("deleted",function(data){
-      if(data.empty){
-        $(".chart").removeClass("active");
-      }
         chart.series.forEach(function (ele,ind){
             if(ele.name === data.name){
               chart.series[ind].remove();
