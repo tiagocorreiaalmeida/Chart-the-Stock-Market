@@ -82,7 +82,7 @@ io.on("connection",(socket)=>{
                             }
                         }).catch((e) => {
                             if (e.code === 11000) {
-                                socket.emit("errorMessage",{message:"The stock you searched for all ready exists listed on the chart"});
+                                return socket.emit("errorMessage",{message:"The stock you searched for all ready exists listed on the chart"});
                             }
                             console.log(e);
                         });
@@ -97,7 +97,6 @@ io.on("connection",(socket)=>{
             Code.findOneAndRemove({name:data.name}).then((doc)=>{
                 if(doc){
                     Code.find().then((dbData)=>{
-                        console.log(dbData.length);
                         if(dbData && dbData.length > 0){
                             io.emit("deleted",{name: doc.name});
                         }else{
@@ -107,7 +106,6 @@ io.on("connection",(socket)=>{
                 }else{
                     socket.emit("errorMessage",{message:"Stock Code not found"});
                 }
-                console.log(data);
             }).catch((e)=>{
               console.log(e);
             });
